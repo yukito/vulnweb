@@ -3,6 +3,7 @@
 
 from flask import Flask, session, redirect, url_for, escape, request, render_template, make_response
 import uuid
+import lib.models
 from lib.session import ManageSession
 from lib.manage_user import is_correct_user
 
@@ -37,6 +38,13 @@ def logout():
    uid = request.cookies.get('sessionid')
    session_list.pop(uid)
    return redirect(url_for('index'))
+
+@app.route('/group/<group_name>')
+def group_summary(group_name):
+   if request.cookies.get('sessionid') in session_list:
+      members, boards = get_summary_of(group_name)
+      return render_template('group.html', members = members, boards = boards)
+   return redirect(url_for('login'))
 
 app.config['SECRET_KEY'] = str(uuid.uuid4())
 

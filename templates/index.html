@@ -2,6 +2,17 @@
 {% block content %}
 <div class='container pull-left col-sm-2'>
    <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
+   <div class='container'>
+      <ul class="list-unstyled lead">
+      <li>Group list
+      <ul>
+      {% for group_name in user.group_list %}
+        <li><a href='/index'>{{group_name[0]}}</a><br></li>
+      {% endfor %}
+      </ul>
+      </li>
+      </ul>
+   </div>
 </div>
 <div class="container well well-lg col-sm-8">埋め込んだようなコンポーネント。</div>
 <div class="container well well-lg col-sm-2 pull-right">埋め込んだようなコンポーネント。</div>

@@ -2,6 +2,7 @@
 # coding:utf-8
 
 import uuid
+import lib.models
 
 class ManageSession(object):
 
@@ -9,3 +10,4 @@ class ManageSession(object):
       self._csrf_token = uuid.uuid4()
       self.username = username
       self.password = None
+      self.group_list = lib.models.get_groups(username)
