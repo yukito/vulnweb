@@ -14,14 +14,15 @@ session_list = {}
 def index():
    if request.cookies.get('sessionid') in session_list:
       uid = request.cookies.get('sessionid')
-      return render_template('index.html', username = session_list[uid].username)
-   return render_template('index.html')
+      return render_template('index.html', user = session_list[uid])
+   return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
    if request.method == 'POST':
       username = request.form['username']
       password = request.form['password']
+      print username, password
       if is_correct_user(username, password):
          uid = str(uuid.uuid4())
          session_list[uid] = ManageSession(username)

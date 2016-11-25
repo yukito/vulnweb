@@ -1,10 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-{% if username %}
-   hello, {{username}}! 
-   <a href='/logout'>Logout</a>
-{% else %}
-   Hello!! 
-   <a href='/login'>Login</a>
-{% endif %}
+<div class='container pull-left col-sm-2'>
+   <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
+</div>
+<div class="container well well-lg col-sm-8">埋め込んだようなコンポーネント。</div>
+<div class="container well well-lg col-sm-2 pull-right">埋め込んだようなコンポーネント。</div>
 {% endblock %}
