@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class='container pull-left col-sm-2'>
+   <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
+   <div class='container'>
+      <ul class="list-unstyled lead">
+      <li>{{groupname}}</li>
+      </ul>
+   </div>
+</div>
+<div class="container well well-lg col-sm-8">
+   <h3>{{topicname}}</h3><br>
+   <form action="/group/{{groupname}}/{{topicname}}" method="post" class="form-horizontal">
+	<div class="form-group">
+		<label for="InputTextarea">テキストエリア</label>
+		<textarea placeholder="複数行に渡るテキストを入力できる。" rows="3" class="form-control" id="InputTextarea" name="post_detail"></textarea>
+	</div>
+   <input type="hidden" value="{{user.username}}" name="username">
+   <input type="submit" class="btn btn-default" value='Post'>
+   </form>
+   {% autoescape false %}
+   {% for writing in posts %}
+      {{writing[4]}} posted by {{writing[2]}}<br>
+      {{writing[3]|e|replace("\n", "<br />\n")}}<br>
+   {% endfor %}
+   {% endautoescape %}
+</div>
+<div class="container well well-lg col-sm-2 pull-right">埋め込んだようなコンポーネント。</div>
+{% endblock %}

@@ -4,16 +4,20 @@
    <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
    <div class='container'>
       <ul class="list-unstyled lead">
-      <li>Group list
+      <li>member
       <ul>
-      {% for group_name in user.group_list %}
-        <li><a href='/group/{{group_name[0]}}'>{{group_name[0]}}</a><br></li>
+      {% for member in members %}
+        <li><a href='/member/{{member[0]}}'>{{member[0]}}</a><br></li>
       {% endfor %}
       </ul>
       </li>
       </ul>
    </div>
 </div>
-<div class="container well well-lg col-sm-8">埋め込んだようなコンポーネント。</div>
+<div class="container well well-lg col-sm-8">
+   {% for topic in topics %}
+      <a href='/group/{{groupname}}/{{topic[0]}}'>{{topic[0]}}</a><br>
+   {% endfor %}
+</div>
 <div class="container well well-lg col-sm-2 pull-right">埋め込んだようなコンポーネント。</div>
 {% endblock %}

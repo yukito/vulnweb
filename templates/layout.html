@@ -7,12 +7,16 @@
 <nav class="navbar navbar-default">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="#">VulnWeb</a>
+			<a class="navbar-brand" href="/index">VulnWeb</a>
 		</div>
       {% if user %}
 		<div class="navbar-header pull-right">
          Welcome, {{user.username}}! 
          <a href='/logout'>Logout</a>
+		</div>
+      {% else %}
+		<div class="navbar-header pull-right">
+         <a href='/signup'>Sign Up</a>
 		</div>
       {% endif %}
 	</div>

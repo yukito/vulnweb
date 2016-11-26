@@ -42,9 +42,19 @@ def logout():
 @app.route('/group/<group_name>')
 def group_summary(group_name):
    if request.cookies.get('sessionid') in session_list:
-      members, boards = get_summary_of(group_name)
-      return render_template('group.html', members = members, boards = boards)
+      members, topics = lib.models.get_summary_of(group_name)
+      return render_template('group.html', groupname = group_name, members = members, topics = topics)
    return redirect(url_for('login'))
+
+@app.route('/group/<group_name>/<topic_name>', methods=['GET', 'POST'])
+def board(group_name, topic_name):
+   if request.cookies.get('sessionid') in session_list:
+      uid = request.cookies.get('sessionid')
+      if request.method == 'POST':
+         lib.models.insert_articles(group_name, topic_name, request.form)
+      posts = lib.models.get_posts_of(group_name, topic_name)
+      return render_template('board.html', groupname = group_name, posts = posts, topicname = topic_name, user = session_list[uid])
+   return render_template('login.html')
 
 app.config['SECRET_KEY'] = str(uuid.uuid4())
 

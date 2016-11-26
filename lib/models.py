@@ -5,7 +5,22 @@ import sqlite3
 
 def get_groups(username):
    conn = sqlite3.connect('db/groups.db')
-   return conn.cursor().execute('select groupname from groups where username =?',(username,))
+   groups = conn.cursor().execute('select groupname from groups where username =?',(username,))
+   return groups
 
 def get_summary_of(group_name):
-   pass
+   conn = sqlite3.connect('db/groups.db')
+   members = conn.cursor().execute('select username from groups where groupname =?',(group_name,))
+   conn = sqlite3.connect('db/topics.db')
+   topics = conn.cursor().execute('select distinct topic from ' + group_name)
+   return members, topics
+
+def get_posts_of(group_name, topic):
+   conn = sqlite3.connect('db/topics.db')
+   posts = conn.cursor().execute('select * from ' + group_name + ' where topic =?',(topic,))
+   return posts
+
+def insert_articles(group_name, topic_name, request):
+   conn = sqlite3.connect('db/topics.db')
+   conn.cursor().execute('insert into ' + group_name + '(topic, username, details) values(?,?,?)',(topic_name, request['username'], request['post_detail']))
+   conn.commit()

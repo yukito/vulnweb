@@ -2,7 +2,7 @@
 
 rm users.db
 rm groups.db
-rm boards.db
+rm topics.db
 
 db="users.db"
 
@@ -29,13 +29,18 @@ insert into groups values('yukito','test2');
 insert into groups values('yukito','test3');
 END
 
-db="boards.db"
+db="topics.db"
 
 sqlite3 $db << END
 CREATE TABLE test1 (
-   boardname varchar(32) NOT NULL,
+   id  integer primary key autoincrement,
+   topic varchar(32) NOT NULL,
    username varchar(32) NOT NULL,
    details text,
    timestamp default CURRENT_TIMESTAMP
 );
+
+insert into test1(topic, username, details) values('hello1','yukito', 'hello world!!');
+insert into test1(topic, username, details) values('hello2','yukito', 'hello world!!');
+insert into test1(topic, username, details) values('hello2','yukito', 'hello world!!');
 END
