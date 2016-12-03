@@ -16,6 +16,7 @@
 		<textarea placeholder="複数行に渡るテキストを入力できる。" rows="3" class="form-control" id="InputTextarea" name="post_detail"></textarea>
 	</div>
    <input type="hidden" value="{{user.username}}" name="username">
+   <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
    <input type="submit" class="btn btn-default" value='Post'>
    </form>
    {% autoescape false %}

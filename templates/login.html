@@ -3,6 +3,7 @@
 <div class="well well-lg">
 <h3>Login</h3>
 <form action="/login" method="post">
+<input name=_csrf_token type=hidden value="{{ anti_csrf_token }}">
 <div class="form-group">
   <label for="InputName">username</label>
   <input type="text" class="form-control" id="InputName" placeholder="input your username" name="username">

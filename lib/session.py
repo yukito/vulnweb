@@ -6,8 +6,8 @@ import lib.models
 
 class ManageSession(object):
 
-   def __init__(self, username):
-      self._csrf_token = uuid.uuid4()
+   def __init__(self, username = None):
+      self.csrf_token = str(uuid.uuid4())
       self.username = username
       self.password = None
       self.group_list = lib.models.get_groups(username)
