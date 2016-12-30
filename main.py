@@ -13,11 +13,22 @@ session_list = {}
 
 @app.before_request
 def csrf_protection():
-   if request.method == "POST":
+   if request.method == "POST" and request.cookies.get('sessionid') in session_list:
       uid = request.cookies.get('sessionid')
       token = session_list[uid].csrf_token
       if token != str(request.form['_csrf_token']):
          abort(403)
+
+@app.before_request
+def is_loggedin():
+   if request.path == '/login' or 'static' in request.path or request.path == '/signup':
+      pass
+   elif not request.cookies.get('sessionid') in session_list:
+      return redirect(url_for('login'))
+   else:
+      uid = request.cookies.get('sessionid')
+      if not session_list[uid].loggedin:
+         return redirect(url_for('login'))
 
 @app.route('/')
 def index():
@@ -42,12 +53,14 @@ def login():
          uid = request.cookies.get('sessionid')
          session_list.pop(uid)
          uid = str(uuid.uuid4())
-         session_list[uid] = ManageSession(username)
+         session_list[uid] = ManageSession(username, True)
          content = redirect(url_for('index'))
          response = make_response(content)
          response.set_cookie('sessionid', value = uid, path = '/', httponly = True)
          return response
-   return render_template('login.html', anti_csrf_token = session_list[uid].csrf_token)
+   else:
+      uid = request.cookies.get('sessionid')
+      return render_template('login.html', anti_csrf_token = session_list[uid].csrf_token)
 
 @app.route('/logout')
 def logout():
