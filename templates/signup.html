@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="well well-lg">
+<h3>SignUp</h3>
+{% if message %}
+   <div class="alert alert-warning" role="alert"><strong>alert</strong>：{{ message }}</div>
+{% endif %}
+<form action="/signup" method="post" id="input-pass">
+<input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+<div class="form-group">
+  <label for="InputName">username</label>
+  <input type="text" class="form-control" id="InputName" placeholder="input your username" name="username">
+</div>
+<div class="form-group">
+  <label for="InputPassword">password</label>
+  <input type="password" class="form-control" id="InputPassword" placeholder="input password" name="password">
+</div>
+<div class="form-group">
+  <label for="ConfirmPassword">confirm</label>
+  <input type="password" class="form-control" id="ConfirmPassword" placeholder="confirm password" name="confirm">
+</div>
+<div class="alert alert-warning" role="alert" id="NotMatch" style="display: none;"><strong>alert</strong>：Passwords do not match!</div>
+<br>
+<input type="submit" class="btn btn-default" value='SignUp'>
+</form>
+</div>
+{% endblock %}

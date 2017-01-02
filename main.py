@@ -17,14 +17,16 @@ def csrf_protection():
       uid = request.cookies.get('sessionid')
       token = session_list[uid].csrf_token
       if token != str(request.form['_csrf_token']):
-         abort(403)
+         return "Error 403"
 
 @app.before_request
 def is_loggedin():
-   if request.path == '/login' or 'static' in request.path or request.path == '/signup':
+   if request.path == '/login' or 'static' in request.path: #or request.path == '/signup':
       pass
    elif not request.cookies.get('sessionid') in session_list:
       return redirect(url_for('login'))
+   elif request.path == '/signup':
+      pass
    else:
       uid = request.cookies.get('sessionid')
       if not session_list[uid].loggedin:
@@ -58,6 +60,8 @@ def login():
          response = make_response(content)
          response.set_cookie('sessionid', value = uid, path = '/', httponly = True)
          return response
+      else:
+         return render_template('login.html', anti_csrf_token = session_list[uid].csrf_token)
    else:
       uid = request.cookies.get('sessionid')
       return render_template('login.html', anti_csrf_token = session_list[uid].csrf_token)
@@ -68,8 +72,15 @@ def logout():
    session_list.pop(uid)
    return redirect(url_for('index'))
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
+   if request.method == 'POST':
+      username = request.form['username']
+      password = request.form['password']
+      if lib.models.update_users(username, password):
+         return render_template('registered.html')
+      else:
+         return render_template('signup.html', message = "This username already exist.")
    return render_template('signup.html')
 
 @app.route('/group/<group_name>')
@@ -88,6 +99,13 @@ def board(group_name, topic_name):
       posts = lib.models.get_posts_of(group_name, topic_name)
       return render_template('board.html', groupname = group_name, posts = posts, topicname = topic_name, user = session_list[uid])
    return redirect(url_for('login'))
+
+@app.route('/check_user')
+def check_user():
+   if lib.models.check_user(request.args.get('username')):
+      return True
+   else:
+      return False
 
 def generate_csrf_token():
    uid = request.cookies.get('sessionid')

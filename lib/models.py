@@ -24,3 +24,20 @@ def insert_articles(group_name, topic_name, request):
    conn = sqlite3.connect('db/topics.db')
    conn.cursor().execute('insert into ' + group_name + '(topic, username, details) values(?,?,?)',(topic_name, request['username'], request['post_detail']))
    conn.commit()
+
+def update_users(username, password):
+   conn = sqlite3.connect('db/users.db')
+   if check_user(username):
+      conn.cursor().execute('insert into users (name, password) values(?,?)',(username, password))
+      conn.commit()
+      return True
+   else:
+      return False
+
+def check_user(username):
+   conn = sqlite3.connect('db/users.db')
+   uname = conn.cursor().execute('select * from users where name =?',(username,))
+   if uname.fetchone() == None:
+      return True
+   else:
+      return False
