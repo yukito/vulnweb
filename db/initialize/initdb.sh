@@ -1,7 +1,10 @@
 #!/bin/sh
+# Please execute this script under db directory
+# Ex. $ cd db; ./initialize/initdb.sh
 
 rm users.db
 rm groups.db
+rm groupMembers.db
 rm topics.db
 
 db="users.db"
@@ -20,13 +23,27 @@ db="groups.db"
 
 sqlite3 $db << END
 CREATE TABLE groups (
+   id  integer primary key autoincrement,
+   groupname varchar(32) NOT NULL UNIQUE,
+   description text
+);
+
+insert into groups(groupname, description) values('test1','testgroup1');
+insert into groups(groupname, description) values('test2','testgroup2');
+insert into groups(groupname, description) values('test3','testgroup3');
+END
+
+db="groupMembers.db"
+
+sqlite3 $db << END
+CREATE TABLE groupMembers (
    username varchar(32) NOT NULL,
    groupname varchar(32) NOT NULL
 );
 
-insert into groups values('yukito','test1');
-insert into groups values('yukito','test2');
-insert into groups values('yukito','test3');
+insert into groupMembers values('yukito','test1');
+insert into groupMembers values('yukito','test2');
+insert into groupMembers values('yukito','test3');
 END
 
 db="topics.db"

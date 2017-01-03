@@ -5,3 +5,9 @@ To launch this, please conduct following command.
 ```
 sudo python main.python
 ```
+
+For db initialization, please execute following command.
+```
+cd db
+./initialize/initdb.sh
+```

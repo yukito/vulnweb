@@ -90,6 +90,18 @@ def group_summary(group_name):
       return render_template('group.html', groupname = group_name, members = members, topics = topics)
    return redirect(url_for('login'))
 
+@app.route('/create_group', methods=['GET', 'POST'])
+def create_group():
+   if request.method == 'POST':
+      groupname = request.form['groupname']
+      description = request.form['description']
+      members = request.form['members']
+      lib.models.update_groups(groupname, description, members)
+      uid = request.cookies.get('sessionid')
+      session_list[uid] = ManageSession(session_list[uid].username, True)
+      return render_template('index.html', user = session_list[uid])
+   return render_template('create_group.html')
+
 @app.route('/group/<group_name>/<topic_name>', methods=['GET', 'POST'])
 def board(group_name, topic_name):
    if request.cookies.get('sessionid') in session_list:

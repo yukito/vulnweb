@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class='container pull-left col-sm-2'>
+   <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
+   <div class='container'>
+      <ul class="list-unstyled lead">
+      <li>{{groupname}}</li>
+      </ul>
+   </div>
+</div>
+<div class="container well well-lg col-sm-8">
+   <h3>{{topicname}}</h3><br>
+   <form action="/create_group" method="post" class="form-horizontal">
+	<div class="form-group">
+      <label for="InputGroupName">group name</label>
+      <input type="text" class="form-control" id="InputGroupName" placeholder="input group name" name="groupname">
+	</div>
+	<div class="form-group">
+		<label for="InputTextarea">description</label>
+		<textarea placeholder="write description" rows="3" class="form-control" id="InputTextarea" name="description"></textarea>
+	</div>
+   <div class="container">
+      <div class="container col-sm-4">
+         <label for="InputGroupMember">add member</label>
+         <input type="text" class="form-control" id="InputGroupMember" placeholder="input name">
+         <a href="javascript:void(0)" onclick="javascript:add_member();">add</a>
+	   </div>
+      <div class="container col-sm-4">
+         <label for="GroupMembers">members</label>
+         <select name="members" id="GroupMembers" size="5" multiple disabled>
+            <option value="">{{user.username}}</option>
+         </select>
+	   </div>
+	</div>
+   <input name=members type=hidden value="" id="GroupMembersParam">
+   <br>
+   <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+   <input type="submit" class="btn btn-default" value='Post'>
+   </form>
+</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/create_group.js"></script>
+{% endblock %}
