@@ -10,5 +10,7 @@ class ManageSession(object):
       self.csrf_token = str(uuid.uuid4())
       self.username = username
       self.password = None
-      self.group_list = lib.models.get_groups(username)
+      self.group_list = []
+      for group in lib.models.get_groups(username):
+         self.group_list.append(group)
       self.loggedin = logged_in

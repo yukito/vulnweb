@@ -56,6 +56,20 @@ CREATE TABLE test1 (
    details text,
    timestamp default CURRENT_TIMESTAMP
 );
+CREATE TABLE test2 (
+   id  integer primary key autoincrement,
+   topic varchar(32) NOT NULL,
+   username varchar(32) NOT NULL,
+   details text,
+   timestamp default CURRENT_TIMESTAMP
+);
+CREATE TABLE test3 (
+   id  integer primary key autoincrement,
+   topic varchar(32) NOT NULL,
+   username varchar(32) NOT NULL,
+   details text,
+   timestamp default CURRENT_TIMESTAMP
+);
 
 insert into test1(topic, username, details) values('hello1','yukito', 'hello world!!');
 insert into test1(topic, username, details) values('hello2','yukito', 'hello world!!');

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class='container pull-left col-sm-2'>
+   <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
+   <div class='container'>
+      <ul class="list-unstyled lead">
+      <li>{{groupname}}</li>
+      </ul>
+   </div>
+</div>
+<div class="container well well-lg col-sm-8">
+   <h3>New Topic</h3><br>
+   {% if flag %}
+      <div class="alert alert-warning" role="alert"><strong>alert</strong>：This topic already exist.</div>
+   {% endif %}
+   <form action="/create_topic/{{groupname}}" method="post" class="form-horizontal">
+	<div class="form-group">
+      <label for="InputTopicName">topic name</label>
+      <input type="text" class="form-control" id="InputTopicName" placeholder="input topic name" name="topicname">
+	</div>
+	<div class="form-group">
+		<label for="InputTextarea">description</label>
+		<textarea placeholder="write description" rows="3" class="form-control" id="InputTextarea" name="description"></textarea>
+	</div>
+   <br>
+   <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+   <input type="submit" class="btn btn-default" value='Post'>
+   </form>
+</div>
+{% endblock %}

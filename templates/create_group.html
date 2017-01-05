@@ -28,11 +28,11 @@
       <div class="container col-sm-4">
          <label for="GroupMembers">members</label>
          <select name="members" id="GroupMembers" size="5" multiple disabled>
-            <option value="">{{user.username}}</option>
+            <option value="{{user.username}}">{{user.username}}</option>
          </select>
 	   </div>
 	</div>
-   <input name=members type=hidden value="" id="GroupMembersParam">
+   <input name=members type=hidden value="{{user.username}}" id="GroupMembersParam">
    <br>
    <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
    <input type="submit" class="btn btn-default" value='Post'>

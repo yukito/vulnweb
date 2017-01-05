@@ -3,6 +3,7 @@
 <div class='container pull-left col-sm-2'>
    <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
    <div class='container'>
+      <h3>{{groupname}}</h3>
       <ul class="list-unstyled lead">
       <li>member
       <ul>
@@ -15,9 +16,18 @@
    </div>
 </div>
 <div class="container well well-lg col-sm-8">
+   <h2>Topics</h2>
+   <ul class="list-group">
    {% for topic in topics %}
-      <a href='/group/{{groupname}}/{{topic[0]}}'>{{topic[0]}}</a><br>
+      <li class="list-group-item">
+         <h3><a href='/group/{{groupname}}/{{topic[1]}}'>{{topic[1]}}</a></h3>
+         {{topic[4]}} created by {{topic[2]}}<br>
+         <h4>{{topic[3]}} </h4>
+      </li>
    {% endfor %}
+   </ul>
 </div>
-<div class="container well well-lg col-sm-2 pull-right">埋め込んだようなコンポーネント。</div>
+<div class="container well well-lg col-sm-2 pull-right">
+   <a href="/create_topic/{{groupname}}">Create Topic</a>
+</div>
 {% endblock %}

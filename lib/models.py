@@ -15,8 +15,12 @@ def get_summary_of(group_name):
    try:
       topics = conn.cursor().execute('select distinct topic from ' + group_name)
    except:
-      topics = []
-   return members, topics
+      topic_summary = []
+   else:
+      topic_summary = []
+      for topic in topics:
+         topic_summary.append(conn.cursor().execute('select * from ' + group_name + ' where topic =? limit 1', (topic[0],)).fetchone())
+   return members, topic_summary
 
 def get_posts_of(group_name, topic):
    conn = sqlite3.connect('db/topics.db')
@@ -45,6 +49,18 @@ def update_groups(groupname, description, members):
    for member in members.split():
       conn.cursor().execute('insert into groupMembers (username, groupname) values(?,?)',(member, groupname))
    conn.commit()
+   conn = sqlite3.connect('db/topics.db')
+   conn.cursor().execute('create table ' + groupname + ' (id integer primary key autoincrement, topic varchar(32) NOT NULL, username varchar(32) NOT NULL, details text, timestamp default CURRENT_TIMESTAMP)')
+   conn.commit()
+
+def update_topics(topicname, username, description, groupname):
+   conn = sqlite3.connect('db/topics.db')
+   if conn.cursor().execute('select * from ' + groupname + ' where topic =?', (topicname,)).fetchone() == None:
+      conn.cursor().execute('insert into ' + groupname + ' (topic, username, details) values(?,?,?)',(topicname, username, description))
+      conn.commit()
+      return True
+   else:
+      return False
 
 def check_user(username):
    conn = sqlite3.connect('db/users.db')
