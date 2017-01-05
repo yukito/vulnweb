@@ -1,0 +1,11 @@
+   <ul class="list-group">
+   {% autoescape false %}
+   {% for writing in posts|reverse %}
+	   <li class="list-group-item">
+      {{writing[0]}}: {{writing[4]}} posted by {{writing[2]}}{% if writing[2] == user.username %} [<a href="javascript:void(0)" onclick="javascript:editArticle('#article_{{writing[0]}}')">Edit</a>]{% endif %}<br>
+      <div id="article_{{writing[0]}}">{{writing[3]|e|replace("\n", "<br />\n")}}</div>
+      <br>
+      </li>
+   {% endfor %}
+   {% endautoescape %}
+   </ul>

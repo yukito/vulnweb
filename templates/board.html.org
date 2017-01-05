@@ -18,7 +18,17 @@
    <input type="submit" class="btn btn-default" value='Post'>
    </form>
    <br>
-   <div id="article"></div>
+   <ul class="list-group">
+   {% autoescape false %}
+   {% for writing in posts|reverse %}
+	   <li class="list-group-item">
+      {{writing[4]}} posted by {{writing[2]}}{% if writing[2] == user.username %} [<a href="javascript:void(0)" onclick="javascript:editArticle('#article_{{writing[0]}}')">Edit</a>]{% endif %}<br>
+      <div id="article_{{writing[0]}}">{{writing[3]|e|replace("\n", "<br />\n")}}</div>
+      <br>
+      </li>
+   {% endfor %}
+   {% endautoescape %}
+   </ul>
 </div>
 <div class="container well well-lg col-sm-2 pull-right">Menu</div>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

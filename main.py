@@ -124,6 +124,14 @@ def board(group_name, topic_name):
       return render_template('board.html', groupname = group_name, posts = posts, topicname = topic_name, user = session_list[uid])
    return redirect(url_for('login'))
 
+@app.route('/article/<group_name>/<topic_name>')
+def get_article(group_name, topic_name):
+   if request.cookies.get('sessionid') in session_list:
+      uid = request.cookies.get('sessionid')
+      posts = lib.models.get_posts_of(group_name, topic_name)
+      return render_template('article.html', groupname = group_name, posts = posts, topicname = topic_name, user = session_list[uid])
+   return redirect(url_for('login'))
+
 @app.route('/check_user')
 def check_user():
    if lib.models.check_user(request.args.get('username')):
