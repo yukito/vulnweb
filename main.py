@@ -32,6 +32,11 @@ def is_loggedin():
       if not session_list[uid].loggedin:
          return redirect(url_for('login'))
 
+@app.after_request
+def set_nocache(response):
+   response.headers['Cache-Control'] = 'no-cache'
+   return response
+
 @app.route('/')
 def index():
    if request.cookies.get('sessionid') in session_list:
@@ -132,12 +137,35 @@ def get_article(group_name, topic_name):
       return render_template('article.html', groupname = group_name, posts = posts, topicname = topic_name, user = session_list[uid])
    return redirect(url_for('login'))
 
+@app.route('/edit/<group_name>/<topic_name>', methods=['POST'])
+def edit_article(group_name, topic_name):
+   if request.cookies.get('sessionid') in session_list:
+      uid = request.cookies.get('sessionid')
+      article_id = request.form['article_id'].split('_')[1]
+      posts = lib.models.update_article(group_name, request.form['post_detail'], article_id)
+      return redirect('/group/' + group_name + '/' + topic_name)
+   return redirect(url_for('login'))
+
+@app.route('/delete/<group_name>/<topic_name>', methods=['POST'])
+def delete_article(group_name, topic_name):
+   if request.cookies.get('sessionid') in session_list:
+      uid = request.cookies.get('sessionid')
+      article_id = request.form['article_id'].split('_')[1]
+      lib.models.delete_article(group_name, article_id)
+      return '{"result": True}'
+   return redirect(url_for('login'))
+
+
 @app.route('/check_user')
 def check_user():
    if lib.models.check_user(request.args.get('username')):
       return True
    else:
       return False
+
+@app.route('/get_token')
+def get_token():
+   return generate_csrf_token()
 
 def generate_csrf_token():
    uid = request.cookies.get('sessionid')

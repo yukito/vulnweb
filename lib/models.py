@@ -24,7 +24,9 @@ def get_summary_of(group_name):
 
 def get_posts_of(group_name, topic):
    conn = sqlite3.connect('db/topics.db')
-   posts = conn.cursor().execute('select * from ' + group_name + ' where topic =?',(topic,))
+   posts = []
+   for article in conn.cursor().execute('select * from ' + group_name + ' where topic =?',(topic,)):
+      posts.append(article)
    return posts
 
 def insert_articles(group_name, topic_name, request):
@@ -61,6 +63,16 @@ def update_topics(topicname, username, description, groupname):
       return True
    else:
       return False
+
+def update_article(groupname, article, article_id):
+   conn = sqlite3.connect('db/topics.db')
+   conn.cursor().execute('update ' + groupname + ' set details =? where id =?',(article, article_id))
+   conn.commit()
+
+def delete_article(groupname, article_id):
+   conn = sqlite3.connect('db/topics.db')
+   conn.cursor().execute('delete from ' + groupname + ' where id =?', (article_id,))
+   conn.commit()
 
 def check_user(username):
    conn = sqlite3.connect('db/users.db')

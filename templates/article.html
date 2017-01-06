@@ -1,11 +1,16 @@
    <ul class="list-group">
    {% autoescape false %}
+   {% set num = posts|length %}
    {% for writing in posts|reverse %}
-	   <li class="list-group-item">
-      {{writing[0]}}: {{writing[4]}} posted by {{writing[2]}}{% if writing[2] == user.username %} [<a href="javascript:void(0)" onclick="javascript:editArticle('#article_{{writing[0]}}')">Edit</a>]{% endif %}<br>
-      <div id="article_{{writing[0]}}">{{writing[3]|e|replace("\n", "<br />\n")}}</div>
+	   <li class="list-group-item container col-sm-12" onmouseover="javascript:showDeleteArticle('#deleteSign_{{writing[0]}}');" onmouseout="hideDeleteArticle('#deleteSign_{{writing[0]}}');">
+      {{ num }}: {{writing[4]}} posted by {{writing[2]}}{% if writing[2] == user.username %} [<a href="javascript:void(0)" onclick="javascript:editArticle('#article_{{writing[0]}}')">Edit</a>]{% endif %}<br>
+      <div class="container col-sm-11 pull-left" id="article_{{writing[0]}}">{{writing[3]|e|replace("\n", "<br />\n")}}</div>
+      <div class="container col-sm-1 pull-right" id="deleteSign_{{writing[0]}}" style="display: none;" onclick="javascript:deleteArticle('#article_{{writing[0]}}');">
+         <small><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></small>
+      </div>
       <br>
       </li>
+   {% set num = num - 1 %}
    {% endfor %}
    {% endautoescape %}
    </ul>
