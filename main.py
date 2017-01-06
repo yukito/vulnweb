@@ -92,7 +92,8 @@ def signup():
 def group_summary(group_name):
    if request.cookies.get('sessionid') in session_list:
       members, topics = lib.models.get_summary_of(group_name)
-      return render_template('group.html', groupname = group_name, members = members, topics = topics)
+      uid = request.cookies.get('sessionid')
+      return render_template('group.html', groupname = group_name, members = members, topics = topics, user = session_list[uid])
    return redirect(url_for('login'))
 
 @app.route('/create_group', methods=['GET', 'POST'])
@@ -126,7 +127,7 @@ def board(group_name, topic_name):
       if request.method == 'POST':
          lib.models.insert_articles(group_name, topic_name, request.form)
       posts = lib.models.get_posts_of(group_name, topic_name)
-      return render_template('board.html', groupname = group_name, posts = posts, topicname = topic_name, user = session_list[uid])
+      return render_template('board.html', groupname = group_name, posts = posts, topicname = topic_name, description = posts[0], user = session_list[uid])
    return redirect(url_for('login'))
 
 @app.route('/article/<group_name>/<topic_name>')
@@ -134,7 +135,7 @@ def get_article(group_name, topic_name):
    if request.cookies.get('sessionid') in session_list:
       uid = request.cookies.get('sessionid')
       posts = lib.models.get_posts_of(group_name, topic_name)
-      return render_template('article.html', groupname = group_name, posts = posts, topicname = topic_name, user = session_list[uid])
+      return render_template('article.html', groupname = group_name, posts = posts[1:], topicname = topic_name, user = session_list[uid])
    return redirect(url_for('login'))
 
 @app.route('/edit/<group_name>/<topic_name>', methods=['POST'])
@@ -155,6 +156,16 @@ def delete_article(group_name, topic_name):
       return '{"result": True}'
    return redirect(url_for('login'))
 
+@app.route('/search/group', methods=['GET', 'POST'])
+def search_group():
+   uid = request.cookies.get('sessionid')
+   if request.method == 'POST':
+      word = request.form['search_word']
+      print word
+      result = lib.models.search_group(word)
+      print result
+      return render_template('gsearch_result.html', result = result)
+   return render_template('gsearch.html', user = session_list[uid])
 
 @app.route('/check_user')
 def check_user():

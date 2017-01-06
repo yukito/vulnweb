@@ -8,13 +8,17 @@
 </div>
 <div class="container well well-lg col-sm-8">
    <h3>{{topicname}}</h3><br>
+   {% autoescape false %}
+   <h4>{{description[3]|e|replace("\n", "<br />\n")}}</h4>
+   {{description[4]}} created by {{description[2]}}
+   {% endautoescape %}
+   <br><br>
    <form action="/group/{{groupname}}/{{topicname}}" method="post" class="form-horizontal">
 	<div class="form-group">
-		<label for="InputTextarea">text</label>
 		<textarea placeholder="input text" rows="3" class="form-control" id="InputTextarea" name="post_detail"></textarea>
 	</div>
    <input type="hidden" value="{{user.username}}" name="username">
-   <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+   <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}" id="postArticle">
    <input type="submit" class="btn btn-default" value='Post'>
    </form>
    <br>

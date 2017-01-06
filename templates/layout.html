@@ -12,7 +12,10 @@
       {% if user %}
 		<div class="navbar-header pull-right">
          Welcome, {{user.username}}! 
-         <a href='/logout'>Logout</a>
+         <a href='/logout'>Logout</a><br>
+         <span class="glyphicon glyphicon-bell" aria-hidden="true" onclick="javascript:void(0);"></span>
+         <span class="glyphicon glyphicon-search" aria-hidden="true" onclick="javascript:void(0);"></span>
+         <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
 		</div>
       {% else %}
 		<div class="navbar-header pull-right">

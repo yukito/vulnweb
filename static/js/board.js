@@ -1,7 +1,7 @@
 $('#article').load(location.pathname.replace(/group/g, "article"))
 
 function editArticle(indicator){
-   article = $(indicator).html();
+   article = $(indicator).text();
    $('#article').load(location.pathname.replace(/group/g, "article"), function(){
       $.get('/get_token', function(token){
          edit_form = '\
@@ -26,6 +26,7 @@ function deleteArticle(indicator){
    $.get('/get_token', function(token){
       $.post(location.pathname.replace(/group/g, "delete"), {"article_id": indicator, "_csrf_token": token}, function(){
          $('#article').load(location.pathname.replace(/group/g, "article"));
+         $.get('/get_token', function(new_token){ $('#postArticle').val(new_token); });
       });
    });
 }

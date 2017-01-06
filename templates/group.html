@@ -28,8 +28,24 @@
    </ul>
 </div>
 <div class="container well well-lg col-sm-2 pull-right">
-   <a href="/create_topic/{{groupname}}">Create Topic</a>
-   <a href="/add_member/{{groupname}}">Add_Member</a>
-   <a href="/leave_group/{{groupname}}">Leave Group</a>
+   <ul class="list-unstyled lead">
+   <li><small>Menu</small>
+   {% if (groupname,) in user.group_list %}
+   <ul>
+      <li><a href="/create_topic/{{groupname}}"><small>Create Topic</small></a></li>
+   </ul>
+   <ul>
+      <li><a href="/invite_member/{{groupname}}"><small>Invite Member</small></a></li>
+   </ul>
+   <ul>
+      <li><a href="/leave_group/{{groupname}}"><small>Leave Group</small></a></li>
+   </ul>
+   {% else %}
+   <ul>
+      <li><a href="/join_group/{{groupname}}"><small>Join Group</small></a></li>
+   </ul>
+   {% endif %}
+   </li>
+   </ul>
 </div>
 {% endblock %}

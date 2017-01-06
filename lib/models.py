@@ -47,12 +47,15 @@ def update_groups(groupname, description, members):
    conn = sqlite3.connect('db/groups.db')
    conn.cursor().execute('insert into groups (groupname, description) values(?,?)',(groupname, description))
    conn.commit()
+   add_members(groupname, members)
+   conn = sqlite3.connect('db/topics.db')
+   conn.cursor().execute('create table ' + groupname + ' (id integer primary key autoincrement, topic varchar(32) NOT NULL, username varchar(32) NOT NULL, details text, timestamp default CURRENT_TIMESTAMP)')
+   conn.commit()
+
+def add_members(groupname, members):
    conn = sqlite3.connect('db/groupMembers.db')
    for member in members.split():
       conn.cursor().execute('insert into groupMembers (username, groupname) values(?,?)',(member, groupname))
-   conn.commit()
-   conn = sqlite3.connect('db/topics.db')
-   conn.cursor().execute('create table ' + groupname + ' (id integer primary key autoincrement, topic varchar(32) NOT NULL, username varchar(32) NOT NULL, details text, timestamp default CURRENT_TIMESTAMP)')
    conn.commit()
 
 def update_topics(topicname, username, description, groupname):
@@ -73,6 +76,13 @@ def delete_article(groupname, article_id):
    conn = sqlite3.connect('db/topics.db')
    conn.cursor().execute('delete from ' + groupname + ' where id =?', (article_id,))
    conn.commit()
+
+def search_group(word):
+   conn = sqlite3.connect('db/groups.db')
+   result = []
+   for group in conn.cursor().execute("select groupname, description from groups where groupname like '%" + word + "%'"):
+      result.append(group)
+   return result
 
 def check_user(username):
    conn = sqlite3.connect('db/users.db')

@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="well well-lg">
+<h3>Search Group</h3>
+
+<div class="form-group">
+  <label for="SearchWord">search word</label>
+  <input type="text" class="form-control" id="SearchWord" placeholder="input search word">
+</div>
+<input type="button" class="btn btn-default" value='Search' onclick="javascript: searchGroup();">
+
+<div id="search_result"></div>
+
+</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/gsearch.js"></script>
+{% endblock %}

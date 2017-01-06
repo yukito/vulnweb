@@ -1,0 +1,8 @@
+   <ul class="list-group">
+   {% for group in result %}
+      <li class="list-group-item">
+         <h3><a href='/group/{{group[0]}}'>{{group[0]}}</a></h3>
+         {{group[1]}}<br>
+      </li>
+   {% endfor %}
+   </ul>
