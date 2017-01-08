@@ -3,6 +3,11 @@
 
 import sqlite3
 
+def get_profile(username):
+   conn = sqlite3.connect('db/users.db')
+   profile = conn.cursor().execute('select * from users where name =?',(username,))
+   return profile
+
 def get_groups(username):
    conn = sqlite3.connect('db/groupMembers.db')
    groups = conn.cursor().execute('select groupname from groupMembers where username =?',(username,))
@@ -53,10 +58,22 @@ def update_groups(groupname, description, members):
    conn.commit()
 
 def add_members(groupname, members):
-   conn = sqlite3.connect('db/groupMembers.db')
    for member in members.split():
-      conn.cursor().execute('insert into groupMembers (username, groupname) values(?,?)',(member, groupname))
-   conn.commit()
+      if check_member(member, groupname):
+         conn = sqlite3.connect('db/groupMembers.db')
+         conn.cursor().execute('insert into groupMembers (username, groupname) values(?,?)',(member, groupname))
+         conn.commit()
+      else:
+         pass
+
+def remove_members(groupname, members):
+   for member in members.split():
+      if not check_member(member, groupname):
+         conn = sqlite3.connect('db/groupMembers.db')
+         conn.cursor().execute('delete from groupMembers where username = ? and groupname = ?',(member, groupname))
+         conn.commit()
+      else:
+         pass
 
 def update_topics(topicname, username, description, groupname):
    conn = sqlite3.connect('db/topics.db')
@@ -84,9 +101,36 @@ def search_group(word):
       result.append(group)
    return result
 
+def invite_members(groupname, username, members):
+   for member in members.split():
+      if check_member(member, groupname) and not check_user(member):
+         conn = sqlite3.connect('db/notifications.db')
+         conn.cursor().execute('insert into notifications (name, type, details) values(?, "invitation", "' + username + ' ' + groupname + '")',(member,))
+         conn.commit()
+      else:
+         pass
+
+def get_notifications(username):
+   conn = sqlite3.connect('db/notifications.db')
+   notifications = []
+   for notification in  conn.cursor().execute('select * from notifications where name =?', (username,)):
+      note = [i for i in notification]
+      if notification[2] == "invitation":
+         note[3] = "<a href='/group/" + notification[3].split()[1] + "'>Received invitaion from " + notification[3].split()[0] + "</a>"
+      notifications.append(note)
+   return notifications
+
 def check_user(username):
    conn = sqlite3.connect('db/users.db')
    uname = conn.cursor().execute('select * from users where name =?',(username,))
+   if uname.fetchone() == None:
+      return True
+   else:
+      return False
+
+def check_member(username, groupname):
+   conn = sqlite3.connect('db/groupMembers.db')
+   uname = conn.cursor().execute('select * from groupMembers where username =? and groupname =?',(username, groupname,))
    if uname.fetchone() == None:
       return True
    else:

@@ -13,15 +13,17 @@
    {{description[4]}} created by {{description[2]}}
    {% endautoescape %}
    <br><br>
-   <form action="/group/{{groupname}}/{{topicname}}" method="post" class="form-horizontal">
-	<div class="form-group">
-		<textarea placeholder="input text" rows="3" class="form-control" id="InputTextarea" name="post_detail"></textarea>
-	</div>
-   <input type="hidden" value="{{user.username}}" name="username">
-   <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}" id="postArticle">
-   <input type="submit" class="btn btn-default" value='Post'>
-   </form>
-   <br>
+   {% if (groupname,) in user.group_list %}
+      <form action="/group/{{groupname}}/{{topicname}}" method="post" class="form-horizontal">
+	   <div class="form-group">
+	   	<textarea placeholder="input text" rows="3" class="form-control" id="InputTextarea" name="post_detail"></textarea>
+	   </div>
+      <input type="hidden" value="{{user.username}}" name="username">
+      <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}" id="postArticle">
+      <input type="submit" class="btn btn-default" value='Post'>
+      </form>
+      <br>
+   {% endif %}
    <div id="article"></div>
 </div>
 <div class="container well well-lg col-sm-2 pull-right">Menu</div>

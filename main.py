@@ -161,11 +161,39 @@ def search_group():
    uid = request.cookies.get('sessionid')
    if request.method == 'POST':
       word = request.form['search_word']
-      print word
       result = lib.models.search_group(word)
-      print result
       return render_template('gsearch_result.html', result = result)
    return render_template('gsearch.html', user = session_list[uid])
+
+@app.route('/add_member/<group_name>', methods=['POST'])
+def add_member(group_name):
+   uid = request.cookies.get('sessionid')
+   lib.models.add_members(group_name, session_list[uid].username)
+   session_list[uid] = ManageSession(session_list[uid].username, True)
+   return redirect('/group/' + group_name)
+
+@app.route('/leave_group/<group_name>', methods=['POST'])
+def leave_group(group_name):
+   uid = request.cookies.get('sessionid')
+   lib.models.remove_members(group_name, session_list[uid].username)
+   session_list[uid] = ManageSession(session_list[uid].username, True)
+   return redirect('/group/' + group_name)
+
+@app.route('/invite_member/<group_name>', methods=['GET', 'POST'])
+def invite_member(group_name):
+   uid = request.cookies.get('sessionid')
+   if request.method == 'POST':
+      members = request.form['members']
+      lib.models.invite_members(group_name, session_list[uid].username, members)
+      return redirect('/group/' + group_name)
+   return render_template('invite_member.html', groupname = group_name, user = session_list[uid])
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+   uid = request.cookies.get('sessionid')
+   if request.method == 'POST':
+      return redirect(url_for('index'))
+   return render_template('edit_profile.html', user = session_list[uid])
 
 @app.route('/check_user')
 def check_user():

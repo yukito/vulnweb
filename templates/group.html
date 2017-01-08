@@ -29,8 +29,8 @@
 </div>
 <div class="container well well-lg col-sm-2 pull-right">
    <ul class="list-unstyled lead">
-   <li><small>Menu</small>
    {% if (groupname,) in user.group_list %}
+   <li><small>Menu</small>
    <ul>
       <li><a href="/create_topic/{{groupname}}"><small>Create Topic</small></a></li>
    </ul>
@@ -38,14 +38,21 @@
       <li><a href="/invite_member/{{groupname}}"><small>Invite Member</small></a></li>
    </ul>
    <ul>
-      <li><a href="/leave_group/{{groupname}}"><small>Leave Group</small></a></li>
+      <li><a href="javascript:void(0);" onclick="javascript: leaveGroup();"><small>Leave Group</small></a></li>
+      <form action="/leave_group/{{groupname}}" method="post" id="leave_group">
+         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+      </form>
    </ul>
    {% else %}
    <ul>
-      <li><a href="/join_group/{{groupname}}"><small>Join Group</small></a></li>
+      <form action="/add_member/{{groupname}}" method="post">
+         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+         <input type="submit" class="btn btn-default" value="Join Group">
+      </form>
    </ul>
    {% endif %}
    </li>
    </ul>
 </div>
+<script src="/static/js/group.js"> </script>
 {% endblock %}

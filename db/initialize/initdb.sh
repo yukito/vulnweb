@@ -6,6 +6,7 @@ rm users.db
 rm groups.db
 rm groupMembers.db
 rm topics.db
+rm notifications.db
 
 db="users.db"
 
@@ -13,7 +14,11 @@ sqlite3 $db << END
 CREATE TABLE users (
    id  integer primary key autoincrement,
    name varchar(32) NOT NULL UNIQUE,
-   password varchar(32) 
+   password varchar(32) ,
+   job varchar(32),
+   firm varchar(32),
+   department varchar(32),
+   image blob
 );
 
 insert into users(name, password) values('yukito','password');
@@ -25,7 +30,8 @@ sqlite3 $db << END
 CREATE TABLE groups (
    id  integer primary key autoincrement,
    groupname varchar(32) NOT NULL UNIQUE,
-   description text
+   description text,
+   image blob
 );
 
 insert into groups(groupname, description) values('test1','testgroup1');
@@ -74,4 +80,16 @@ CREATE TABLE test3 (
 insert into test1(topic, username, details) values('hello1','yukito', 'hello world!!');
 insert into test1(topic, username, details) values('hello2','yukito', 'hello world!!');
 insert into test1(topic, username, details) values('hello2','yukito', 'hello world!!');
+END
+
+db="notifications.db"
+
+sqlite3 $db << END
+CREATE TABLE notifications (
+   id  integer primary key autoincrement,
+   name varchar(32) NOT NULL,
+   type varchar(32) NOT NULL,
+   details text,
+   timestamp default CURRENT_TIMESTAMP
+);
 END

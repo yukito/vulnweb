@@ -14,3 +14,15 @@ class ManageSession(object):
       for group in lib.models.get_groups(username):
          self.group_list.append(group)
       self.loggedin = logged_in
+      if logged_in:
+         profile = lib.models.get_profile(username).fetchone()
+         self.job = profile[3]
+         self.firm = profile[4]
+         self.department = profile[5]
+         self.image = profile[6]
+      else:
+         self.job = None
+         self.firm = None
+         self.department = None
+         self.image = None
+      self.notification = lib.models.get_notifications(username)
