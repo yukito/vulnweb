@@ -1,18 +1,18 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class='container pull-left col-sm-2'>
-   <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
    <div class='container'>
       <ul class="list-unstyled lead">
-      <li>{{groupname}}</li>
+      <li><a href="javascript:void(0);">Profile</a></li>
+      <li><a href="javascript:void(0);">Password</a></li>
       </ul>
    </div>
 </div>
 <div class="container well well-lg col-sm-8">
    <h3></h3><br>
-   <form action="/edit_profile" method="post" class="form-horizontal">
+   <form action="/edit_profile" method="post" class="form-horizontal" enctype=multipart/form-data>
    <div class="container col-sm-4">
-      <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
+      <img src="/image/{{user.userid}}" class="img-rounded img-responsive">
       <input id="lefile" type="file" style="display:none" name="image">
       <div class="input-group">
          <input type="text" id="photoCover" class="form-control" placeholder="select file...">

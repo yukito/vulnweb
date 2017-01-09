@@ -15,12 +15,14 @@ class ManageSession(object):
          self.group_list.append(group)
       self.loggedin = logged_in
       if logged_in:
-         profile = lib.models.get_profile(username).fetchone()
-         self.job = profile[3]
-         self.firm = profile[4]
-         self.department = profile[5]
-         self.image = profile[6]
+         self.userid, _, self.job, self.firm, self.department, self.image = lib.models.get_profile(username)
+         #self.userid = profile[0]
+         #self.job = profile[3]
+         #self.firm = profile[4]
+         #self.department = profile[5]
+         #self.image = profile[6]
       else:
+         self.userid = None
          self.job = None
          self.firm = None
          self.department = None

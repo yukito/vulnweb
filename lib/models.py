@@ -5,8 +5,15 @@ import sqlite3
 
 def get_profile(username):
    conn = sqlite3.connect('db/users.db')
-   profile = conn.cursor().execute('select * from users where name =?',(username,))
-   return profile
+   conn.text_factory = str
+   userid, uname, _, job, firm, department, image = conn.cursor().execute('select * from users where name =?',(username,)).fetchone()
+   return userid, uname, job, firm, department, image
+
+def get_image(userid):
+   conn = sqlite3.connect('db/users.db')
+   conn.text_factory = str
+   image = conn.cursor().execute('select image from users where id =?',(userid,)).fetchone()[0]
+   return image
 
 def get_groups(username):
    conn = sqlite3.connect('db/groupMembers.db')
@@ -55,6 +62,12 @@ def update_groups(groupname, description, members):
    add_members(groupname, members)
    conn = sqlite3.connect('db/topics.db')
    conn.cursor().execute('create table ' + groupname + ' (id integer primary key autoincrement, topic varchar(32) NOT NULL, username varchar(32) NOT NULL, details text, timestamp default CURRENT_TIMESTAMP)')
+   conn.commit()
+
+def update_profile(username, a_username, job, firm, department, image):
+   conn = sqlite3.connect('db/users.db')
+   conn.text_factory = str
+   conn.cursor().execute('update users set name =?, job =?, firm =?, department =?, image= ? where name =?',(a_username, job, firm, department, image.read(), username))
    conn.commit()
 
 def add_members(groupname, members):

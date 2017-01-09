@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding:utf-8
 
-from flask import Flask, session, redirect, url_for, escape, request, render_template, make_response
+from flask import Flask, session, redirect, url_for, escape, request, render_template, make_response, Response
 import uuid
 import lib.models
 from lib.session import ManageSession
@@ -21,7 +21,12 @@ def csrf_protection():
 
 @app.before_request
 def is_loggedin():
-   if request.path == '/login' or 'static' in request.path: #or request.path == '/signup':
+   if request.path == '/login':
+      pass
+#      uid = request.cookies.get('sessionid')
+#      if session_list[uid].loggedin:
+#         return redirect(url_for('index'))
+   elif 'static' in request.path: #or request.path == '/signup':
       pass
    elif not request.cookies.get('sessionid') in session_list:
       return redirect(url_for('login'))
@@ -39,10 +44,8 @@ def set_nocache(response):
 
 @app.route('/')
 def index():
-   if request.cookies.get('sessionid') in session_list:
-      uid = request.cookies.get('sessionid')
-      return render_template('index.html', user = session_list[uid])
-   return redirect(url_for('login'))
+   uid = request.cookies.get('sessionid')
+   return render_template('index.html', user = session_list[uid])
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -90,11 +93,9 @@ def signup():
 
 @app.route('/group/<group_name>')
 def group_summary(group_name):
-   if request.cookies.get('sessionid') in session_list:
-      members, topics = lib.models.get_summary_of(group_name)
-      uid = request.cookies.get('sessionid')
-      return render_template('group.html', groupname = group_name, members = members, topics = topics, user = session_list[uid])
-   return redirect(url_for('login'))
+   members, topics = lib.models.get_summary_of(group_name)
+   uid = request.cookies.get('sessionid')
+   return render_template('group.html', groupname = group_name, members = members, topics = topics, user = session_list[uid])
 
 @app.route('/create_group', methods=['GET', 'POST'])
 def create_group():
@@ -122,39 +123,31 @@ def create_topic(group_name):
 
 @app.route('/group/<group_name>/<topic_name>', methods=['GET', 'POST'])
 def board(group_name, topic_name):
-   if request.cookies.get('sessionid') in session_list:
-      uid = request.cookies.get('sessionid')
-      if request.method == 'POST':
-         lib.models.insert_articles(group_name, topic_name, request.form)
-      posts = lib.models.get_posts_of(group_name, topic_name)
-      return render_template('board.html', groupname = group_name, posts = posts, topicname = topic_name, description = posts[0], user = session_list[uid])
-   return redirect(url_for('login'))
+   uid = request.cookies.get('sessionid')
+   if request.method == 'POST':
+      lib.models.insert_articles(group_name, topic_name, request.form)
+   posts = lib.models.get_posts_of(group_name, topic_name)
+   return render_template('board.html', groupname = group_name, posts = posts, topicname = topic_name, description = posts[0], user = session_list[uid])
 
 @app.route('/article/<group_name>/<topic_name>')
 def get_article(group_name, topic_name):
-   if request.cookies.get('sessionid') in session_list:
-      uid = request.cookies.get('sessionid')
-      posts = lib.models.get_posts_of(group_name, topic_name)
-      return render_template('article.html', groupname = group_name, posts = posts[1:], topicname = topic_name, user = session_list[uid])
-   return redirect(url_for('login'))
+   uid = request.cookies.get('sessionid')
+   posts = lib.models.get_posts_of(group_name, topic_name)
+   return render_template('article.html', groupname = group_name, posts = posts[1:], topicname = topic_name, user = session_list[uid])
 
 @app.route('/edit/<group_name>/<topic_name>', methods=['POST'])
 def edit_article(group_name, topic_name):
-   if request.cookies.get('sessionid') in session_list:
-      uid = request.cookies.get('sessionid')
-      article_id = request.form['article_id'].split('_')[1]
-      posts = lib.models.update_article(group_name, request.form['post_detail'], article_id)
-      return redirect('/group/' + group_name + '/' + topic_name)
-   return redirect(url_for('login'))
+   uid = request.cookies.get('sessionid')
+   article_id = request.form['article_id'].split('_')[1]
+   posts = lib.models.update_article(group_name, request.form['post_detail'], article_id)
+   return redirect('/group/' + group_name + '/' + topic_name)
 
 @app.route('/delete/<group_name>/<topic_name>', methods=['POST'])
 def delete_article(group_name, topic_name):
-   if request.cookies.get('sessionid') in session_list:
-      uid = request.cookies.get('sessionid')
-      article_id = request.form['article_id'].split('_')[1]
-      lib.models.delete_article(group_name, article_id)
-      return '{"result": True}'
-   return redirect(url_for('login'))
+   uid = request.cookies.get('sessionid')
+   article_id = request.form['article_id'].split('_')[1]
+   lib.models.delete_article(group_name, article_id)
+   return '{"result": True}'
 
 @app.route('/search/group', methods=['GET', 'POST'])
 def search_group():
@@ -192,8 +185,31 @@ def invite_member(group_name):
 def edit_profile():
    uid = request.cookies.get('sessionid')
    if request.method == 'POST':
+      image = request.files['image']
+      username = request.form['username']
+      job = request.form['job']
+      firm = request.form['firm']
+      department = request.form['department']
+      lib.models.update_profile(session_list[uid].username, username, job, firm, department, image.stream)
       return redirect(url_for('index'))
    return render_template('edit_profile.html', user = session_list[uid])
+
+@app.route('/member/<user_name>')
+def show_profile(user_name):
+   uid = request.cookies.get('sessionid')
+   profile = lib.models.get_profile(user_name)
+   return render_template('profile.html', profile = profile, user = session_list[uid])
+
+@app.route('/image/<user_id>')
+def send_image(user_id):
+   data = lib.models.get_image(user_id)
+   fp = open("tmp/.tmp", "w+b")
+   if data:
+      fp.write(data)   
+   else:
+      fp.close()
+      redirect('/static/sample/Lenna.png')
+   return Response(data, mimetype ='image/png')
 
 @app.route('/check_user')
 def check_user():
