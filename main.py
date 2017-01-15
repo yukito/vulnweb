@@ -6,6 +6,7 @@ import uuid
 import lib.models
 from lib.session import ManageSession
 from lib.manage_user import is_correct_user
+from lib.auth import requires_auth
 
 app = Flask(__name__)
 
@@ -20,6 +21,7 @@ def csrf_protection():
          return "Error 403"
 
 @app.before_request
+#@requires_auth
 def is_loggedin():
    if request.path == '/login':
       pass
