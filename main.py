@@ -59,10 +59,10 @@ def login():
       response.set_cookie('sessionid', value = uid, path = '/', httponly = True)
       return response
    elif request.method == 'POST':
+      uid = request.cookies.get('sessionid')
       username = request.form['username']
       password = request.form['password']
       if is_correct_user(username, password):
-         uid = request.cookies.get('sessionid')
          session_list.pop(uid)
          uid = str(uuid.uuid4())
          session_list[uid] = ManageSession(username, True)
