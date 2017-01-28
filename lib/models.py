@@ -70,6 +70,12 @@ def update_profile(username, a_username, job, firm, department, image):
    conn.cursor().execute('update users set name =?, job =?, firm =?, department =?, image= ? where name =?',(a_username, job, firm, department, image.read(), username))
    conn.commit()
 
+def update_password(username, password):
+   conn = sqlite3.connect('db/users.db')
+   conn.text_factory = str
+   conn.cursor().execute('update users set password= ? where name =?',(password, username))
+   conn.commit()
+
 def add_members(groupname, members):
    for member in members.split():
       if check_member(member, groupname):

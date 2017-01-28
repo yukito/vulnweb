@@ -195,7 +195,15 @@ def get_edit_profile():
 @app.route('/edit/password', methods=['GET', 'POST'])
 def change_password():
    uid = request.cookies.get('sessionid')
-   #if request.method == 'POST':
+   if request.method == 'POST':
+      username = session_list[uid].username
+      password = request.form['c_password']
+      if is_correct_user(username, password):
+         new_password = request.form['n_password']
+         lib.models.update_password(username, new_password)
+         return "True"
+      else:
+         return "False"
    return render_template('change_password.html', user = session_list[uid])
 
 @app.route('/edit/profile', methods=['GET', 'POST'])

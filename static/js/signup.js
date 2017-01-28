@@ -1,4 +1,3 @@
-console.log('first');
 $("#input-pass").submit(function(){
   if ($("#InputPassword").val() != $("#ConfirmPassword").val()) {
     $("#NotMatch").show();
