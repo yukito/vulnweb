@@ -25,6 +25,7 @@ def csrf_protection():
 def is_loggedin():
    if request.path == '/login':
       pass
+# issue: if user logged in, it should be directed toward index page.
 #      uid = request.cookies.get('sessionid')
 #      if session_list[uid].loggedin:
 #         return redirect(url_for('index'))
@@ -186,7 +187,18 @@ def invite_member(group_name):
       return redirect('/group/' + group_name)
    return render_template('invite_member.html', groupname = group_name, user = session_list[uid])
 
-@app.route('/edit_profile', methods=['GET', 'POST'])
+@app.route('/edit_profile')
+def get_edit_profile():
+   uid = request.cookies.get('sessionid')
+   return render_template('edit_profile.html', user = session_list[uid])
+
+@app.route('/edit/password', methods=['GET', 'POST'])
+def change_password():
+   uid = request.cookies.get('sessionid')
+   #if request.method == 'POST':
+   return render_template('change_password.html', user = session_list[uid])
+
+@app.route('/edit/profile', methods=['GET', 'POST'])
 def edit_profile():
    uid = request.cookies.get('sessionid')
    if request.method == 'POST':
@@ -197,7 +209,7 @@ def edit_profile():
       department = request.form['department']
       lib.models.update_profile(session_list[uid].username, username, job, firm, department, image.stream)
       return redirect(url_for('index'))
-   return render_template('edit_profile.html', user = session_list[uid])
+   return render_template('eprofile.html', user = session_list[uid])
 
 @app.route('/member/<user_name>')
 def show_profile(user_name):

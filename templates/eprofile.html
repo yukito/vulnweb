@@ -1,0 +1,40 @@
+   <h3></h3><br>
+   <form action="/edit_profile" method="post" class="form-horizontal" enctype=multipart/form-data>
+   <div class="container col-sm-4">
+      <img src="/image/{{user.userid}}" class="img-rounded img-responsive">
+      <input id="lefile" type="file" style="display:none" name="image">
+      <div class="input-group">
+         <input type="text" id="photoCover" class="form-control" placeholder="select file...">
+         <span class="input-group-btn"><button type="button" class="btn btn-default" onclick="$('input&#91;id=lefile&#93;').click();">Browse</button></span>
+      </div>
+   </div>
+   <div class="container col-sm-8"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>
+	<div class="form-group">
+      <label for="InputName">username</label>
+      <input type="text" class="form-control" id="InputName" value="{{user.username}}"  name="username">
+	</div>
+	<div class="form-group">
+      <label for="InputJob">Job</label>
+      <input type="text" class="form-control" id="InputJob" {% if user.job %}value="{{user.job}}" {% else %}placeholder="input your job"{% endif%} name="job">
+	</div>
+	<div class="form-group">
+      <label for="InputFirm">Firm</label>
+      <input type="text" class="form-control" id="InputFirm" {% if user.firm %}value="{{user.firm}}" {% else %}placeholder="input your firm"{% endif %} name="firm">
+	</div>
+	<div class="form-group">
+      <label for="InputDepartment">Department</label>
+      <input type="text" class="form-control" id="InputDepartment" {% if user.department %}value="{{user.department}}" {% else %}placeholder="input your department"{% endif %} name="department">
+	</div>
+	<div class="form-group">
+		<label for="InputTextarea">description</label>
+		<textarea placeholder="write description" rows="3" class="form-control" id="InputTextarea" name="description"></textarea>
+	</div>
+   <br>
+   <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+   <input type="submit" class="btn btn-default" value='Post'>
+   </form>
+   <script>
+     $('input[id=lefile]').change(function() {
+       $('#photoCover').val($(this).val());
+     });
+   </script>
