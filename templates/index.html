@@ -1,7 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class='container pull-left col-sm-2'>
-   <img src="/image/{{user.userid}}" class="img-rounded img-responsive">
+   {% if user.image %}
+      <img src="/image/{{user.userid}}" class="img-rounded img-responsive">
+   {% else %}
+      <img src="/static/sample/sample-64x64.png" class="img-rounded img-responsive">
+   {% endif %}
    <div class='container'>
       <ul class="list-unstyled lead">
       <li>Group list

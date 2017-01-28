@@ -112,6 +112,7 @@ def search_group(word):
    result = []
    for group in conn.cursor().execute("select groupname, description from groups where groupname like '%" + word + "%'"):
       result.append(group)
+   print result
    return result
 
 def invite_members(groupname, username, members):

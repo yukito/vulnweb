@@ -157,7 +157,10 @@ def search_group():
    if request.method == 'POST':
       word = request.form['search_word']
       result = lib.models.search_group(word)
-      return render_template('gsearch_result.html', result = result)
+      if result:
+         return render_template('gsearch_result.html', result = result)
+      else:
+         return ""
    return render_template('gsearch.html', user = session_list[uid])
 
 @app.route('/add_member/<group_name>', methods=['POST'])
