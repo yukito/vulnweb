@@ -4,7 +4,7 @@
 import sqlite3
 
 def is_correct_user(username, password):
-   conn = sqlite3.connect('db/users.db')
+   conn = sqlite3.connect('db/vulnweb.db')
    try:
       pwd = conn.cursor().execute('select password from users where name =?',(username,)).fetchone()
       if pwd[0] == password:

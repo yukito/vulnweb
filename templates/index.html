@@ -18,7 +18,16 @@
       </ul>
    </div>
 </div>
-<div class="container well well-lg col-sm-8">Recently update</div>
+<div class="container well well-lg col-sm-8">
+   <h2>Recently Update</h2>
+   {% for update in updates %}
+      <li class="list-group-item">
+         <h4><a href='/group/{{update[5]}}/{{update[1]}}'>{{update[1]}}</a></h4>
+         {{update[2]}} posted {{update[4]}}<br>
+         {{update[3]}}<br>
+      </li>
+   {% endfor %}
+</div>
 <div class="container well well-lg col-sm-2 pull-right">
       <ul class="list-unstyled lead">
       <li><small>Menu</small>

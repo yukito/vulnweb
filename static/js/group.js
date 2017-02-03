@@ -1,3 +1,5 @@
 function leaveGroup(){
-   $('#leave_group').submit();
+   if(confirm('Are you sure?')){
+      $('#leave_group').submit();
+   }
 }
