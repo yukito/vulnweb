@@ -17,7 +17,7 @@ def get_image(userid):
 
 def get_groups(username):
    conn = sqlite3.connect('db/vulnweb.db')
-   groups = conn.cursor().execute('select groupname from groupMembers where username =?',(username,))
+   groups = conn.cursor().execute('select groupname, role from groupMembers where username =?',(username,))
    return groups
 
 def get_summary_of(group_name):

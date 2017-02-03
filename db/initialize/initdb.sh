@@ -37,12 +37,13 @@ END
 sqlite3 $db << END
 CREATE TABLE groupMembers (
    username varchar(32) NOT NULL,
-   groupname varchar(32) NOT NULL
+   groupname varchar(32) NOT NULL,
+   role integer default 0
 );
 
-insert into groupMembers values('yukito','test1');
-insert into groupMembers values('yukito','test2');
-insert into groupMembers values('yukito','test3');
+insert into groupMembers values('yukito','test1', 1);
+insert into groupMembers(username, groupname) values('yukito','test2');
+insert into groupMembers(username, groupname) values('yukito','test3');
 END
 
 sqlite3 $db << END

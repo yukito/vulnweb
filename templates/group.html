@@ -29,7 +29,7 @@
 </div>
 <div class="container well well-lg col-sm-2 pull-right">
    <ul class="list-unstyled lead">
-   {% if (groupname,) in user.group_list %}
+   {% if groupname in user.group_list %}
    <li><small>Menu</small>
    <ul>
       <li><a href="/create_topic/{{groupname}}"><small>Create Topic</small></a></li>
@@ -43,6 +43,11 @@
          <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
       </form>
    </ul>
+   {% if user.group_list[groupname] == 1 %}
+   <ul>
+      <li><a href="/{{groupname}}/management"><small>Management</small></a></li>
+   </ul>
+   {% endif %}
    {% else %}
    <ul>
       <form action="/add_member/{{groupname}}" method="post">
