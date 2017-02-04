@@ -10,7 +10,7 @@
 </div>
 <div class="container well well-lg col-sm-8">
    <h3>{{topicname}}</h3><br>
-   <form action="/manage_group" method="post" class="form-horizontal">
+   <form action="/management/{{groupname}}" method="post" class="form-horizontal">
    <div class="container col-sm-4">
    {% if user.image %}
       <img src="/image/{{user.userid}}" class="img-rounded img-responsive">
@@ -25,15 +25,15 @@
    </div>
 	<div class="form-group">
       <label for="InputGroupName">group name</label>
-      <input type="text" class="form-control" id="InputGroupName" placeholder="input group name" name="groupname">
+      <input type="text" class="form-control" id="InputGroupName" placeholder="input group name" name="groupname" value="{{config[1]}}">
 	</div>
 	<div class="form-group">
 		<label for="InputTextarea">description</label>
-		<textarea placeholder="write description" rows="3" class="form-control" id="InputTextarea" name="description"></textarea>
+		<textarea placeholder="write description" rows="3" class="form-control" id="InputTextarea" name="description" value="{{config[2]}}"></textarea>
 	</div>
    <div class="container">
       <div class="container col-sm-4">
-         <form action="...">
+         <div>
             <label for="geneMembers">members</label>
             <select name="members" id="geneMembers" size="5">
                {% for member in members %}
@@ -43,8 +43,8 @@
                {% endfor %}
                <option value="dummy" disabled>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option><br>
             </select>
-            <input type="submit" value="add" onclick="javascript: addAuth(); return false;">
-         </form>
+            <input type="button" value="add" onclick="javascript: addAuth();">
+	      </div>
 	   </div>
       <div class="container col-sm-4">
          <label for="AdminMembers">members</label>
