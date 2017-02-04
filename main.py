@@ -18,7 +18,7 @@ def csrf_protection():
       uid = request.cookies.get('sessionid')
       token = session_list[uid].csrf_token
       if token != str(request.form['_csrf_token']):
-         return "Error 403"
+         return "Error 403", 403
 
 @app.before_request
 #@requires_auth
@@ -97,9 +97,21 @@ def signup():
 
 @app.route('/group/<group_name>')
 def group_summary(group_name):
-   members, topics = lib.models.get_summary_of(group_name)
-   uid = request.cookies.get('sessionid')
-   return render_template('group.html', groupname = group_name, members = members, topics = topics, user = session_list[uid])
+   if lib.models.check_group_exist(group_name):
+      members, topics = lib.models.get_summary_of(group_name)
+      uid = request.cookies.get('sessionid')
+      return render_template('group.html', groupname = group_name, members = members, topics = topics, user = session_list[uid])
+   else:
+      return "404 Not Found", 404
+
+@app.route('/management/<group_name>')
+def management_group(group_name):
+   if lib.models.check_group_exist(group_name):
+      configuration, members = lib.models.get_group_config(group_name)
+      uid = request.cookies.get('sessionid')
+      return render_template('mgroup.html', groupname = group_name, config = configuration, members = members, user = session_list[uid])
+   else:
+      return "404 Not Found", 404
 
 @app.route('/create_group', methods=['GET', 'POST'])
 def create_group():

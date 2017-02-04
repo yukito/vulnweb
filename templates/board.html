@@ -13,7 +13,7 @@
    {{description[4]}} created by {{description[2]}}
    {% endautoescape %}
    <br><br>
-   {% if (groupname,) in user.group_list %}
+   {% if groupname in user.group_list %}
       <form action="/group/{{groupname}}/{{topicname}}" method="post" class="form-horizontal">
 	   <div class="form-group">
 	   	<textarea placeholder="input text" rows="3" class="form-control" id="InputTextarea" name="post_detail"></textarea>

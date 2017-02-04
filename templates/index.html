@@ -20,6 +20,7 @@
 </div>
 <div class="container well well-lg col-sm-8">
    <h2>Recently Update</h2>
+   {% if updates %}
    {% for update in updates %}
       <li class="list-group-item">
          <h4><a href='/group/{{update[5]}}/{{update[1]}}'>{{update[1]}}</a></h4>
@@ -27,6 +28,7 @@
          {{update[3]}}<br>
       </li>
    {% endfor %}
+   {% endif %}
 </div>
 <div class="container well well-lg col-sm-2 pull-right">
       <ul class="list-unstyled lead">
