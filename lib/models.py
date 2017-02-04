@@ -26,13 +26,21 @@ def get_summary_of(group_name):
    try:
       topics = conn.cursor().execute('select topic from groupTopics where groupname =?', (group_name,))
    except:
-      topic_summary = []
+      pass
    else:
       topic_summary = []
       conn = sqlite3.connect('db/topics.db')
       for topic in topics:
          topic_summary.append(conn.cursor().execute('select * from ' + group_name + ' where topic =? limit 1', (topic[0],)).fetchone())
    return members, topic_summary
+
+def get_group_config(group_name):
+   conn = sqlite3.connect('db/vulnweb.db')
+   members = []
+   for member in  conn.cursor().execute('select * from groupMembers where groupname =?',(group_name,)):
+      members.append(member)
+   configuration = conn.cursor().execute('select * from groups where groupname =?',(group_name,))
+   return configuration, members
 
 def get_posts_of(group_name, topic):
    conn = sqlite3.connect('db/topics.db')
@@ -122,7 +130,6 @@ def search_group(word):
    result = []
    for group in conn.cursor().execute("select groupname, description from groups where groupname like '%" + word + "%'"):
       result.append(group)
-   print result
    return result
 
 def invite_members(groupname, username, members):
@@ -151,7 +158,10 @@ def get_recently_update(username):
       conn = sqlite3.connect('db/topics.db')
       query += gname[0] + ' union all select * from '
    query = query[:(len(query) - 24)] + 'order by timestamp limit 10'
-   return conn.cursor().execute(query)
+   try:
+      return conn.cursor().execute(query)
+   except:
+      return None
 
 def check_user(username):
    conn = sqlite3.connect('db/vulnweb.db')
@@ -168,3 +178,10 @@ def check_member(username, groupname):
       return True
    else:
       return False
+
+def check_group_exist(groupname):
+   conn = sqlite3.connect('db/vulnweb.db')
+   if conn.cursor().execute('select * from groups where groupname =?',(groupname,)).fetchone() == None:
+      return False
+   else:
+      return True

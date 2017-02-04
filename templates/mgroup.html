@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class='container pull-left col-sm-2'>
+   <img src="/static/sample/Lenna.png" class="img-rounded img-responsive">
+   <div class='container'>
+      <ul class="list-unstyled lead">
+      <li>{{groupname}}</li>
+      </ul>
+   </div>
+</div>
+<div class="container well well-lg col-sm-8">
+   <h3>{{topicname}}</h3><br>
+   <form action="/manage_group" method="post" class="form-horizontal">
+   <div class="container col-sm-4">
+   {% if user.image %}
+      <img src="/image/{{user.userid}}" class="img-rounded img-responsive">
+   {% else %}
+      <img src="/static/sample/sample-64x64.png" class="img-rounded img-responsive">
+   {% endif %}
+      <input id="lefile" type="file" style="display:none" name="image">
+      <div class="input-group">
+         <input type="text" id="photoCover" class="form-control" placeholder="select file...">
+         <span class="input-group-btn"><button type="button" class="btn btn-default" onclick="$('input&#91;id=lefile&#93;').click();">Browse</button></span>
+      </div>
+   </div>
+	<div class="form-group">
+      <label for="InputGroupName">group name</label>
+      <input type="text" class="form-control" id="InputGroupName" placeholder="input group name" name="groupname">
+	</div>
+	<div class="form-group">
+		<label for="InputTextarea">description</label>
+		<textarea placeholder="write description" rows="3" class="form-control" id="InputTextarea" name="description"></textarea>
+	</div>
+   <div class="container">
+      <div class="container col-sm-4">
+         <form action="...">
+            <label for="geneMembers">members</label>
+            <select name="members" id="geneMembers" size="5">
+               {% for member in members %}
+                  {% if member[2] == 0 %}
+                  <option value="{{member[0]}}">{{member[0]}}</option><br>
+                  {% endif %}
+               {% endfor %}
+               <option value="dummy" disabled>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option><br>
+            </select>
+            <input type="submit" value="add" onclick="javascript: addAuth(); return false;">
+         </form>
+	   </div>
+      <div class="container col-sm-4">
+         <label for="AdminMembers">members</label>
+         <select name="members" id="AdminMembers" size="5" multiple disabled>
+            {% for member in members %}
+               {% if member[2] == 1 %}
+               <option value="{{member[0]}}">{{member[0]}}</option>
+               {% endif %}
+            {% endfor %}
+         </select>
+	   </div>
+	</div>
+   <input name=members type=hidden value="{{user.username}}" id="GroupMembersParam">
+   <br>
+   <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+   <input type="submit" class="btn btn-default" value='Post'>
+   </form>
+</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+function addAuth(){
+   values = $('#geneMembers').val();
+   if(values == 'dummy') return false;
+	members = $('#geneMembers').html().split(/\r\n|\r|\n/);
+	admins = $('#AdminMembers').html().split(/\r\n|\r|\n/);
+	for(var i = 0; i < members.length; i++){
+      if(members[i].match(values)){
+         admins.push(members[i]);
+         members.splice(i, 1);
+         $('#geneMembers').html(members);
+         $('#AdminMembers').html(admins);
+         $("#GroupMembersParam").val($("#GroupMembersParam").val()+' ' + values);
+         return false;
+      }
+   }
+   return false;
+}
+</script>
+{% endblock %}
