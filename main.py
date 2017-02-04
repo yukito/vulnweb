@@ -239,10 +239,10 @@ def send_image(user_id):
 
 @app.route('/check_user')
 def check_user():
-   if lib.models.check_user(request.args.get('username')):
-      return True
+   if not lib.models.check_user(request.args.get('username')):
+      return "True"
    else:
-      return False
+      return "False"
 
 @app.route('/get_token')
 def get_token():
