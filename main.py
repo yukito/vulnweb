@@ -18,7 +18,7 @@ def csrf_protection():
       uid = request.cookies.get('sessionid')
       token = session_list[uid].csrf_token
       if token != str(request.form['_csrf_token']):
-         return "Error 403"
+         return "Error 403", 403
 
 @app.before_request
 #@requires_auth
@@ -97,9 +97,34 @@ def signup():
 
 @app.route('/group/<group_name>')
 def group_summary(group_name):
-   members, topics = lib.models.get_summary_of(group_name)
-   uid = request.cookies.get('sessionid')
-   return render_template('group.html', groupname = group_name, members = members, topics = topics, user = session_list[uid])
+   if lib.models.check_group_exist(group_name):
+      members, topics = lib.models.get_summary_of(group_name)
+      uid = request.cookies.get('sessionid')
+      return render_template('group.html', groupname = group_name, members = members, topics = topics, user = session_list[uid])
+   else:
+      return "404 Not Found", 404
+
+@app.route('/management/<group_name>', methods=['GET', 'POST'])
+def management_group(group_name):
+   if lib.models.check_group_exist(group_name):
+      if request.method == 'POST':
+         gname = request.form['groupname']
+         desc = request.form['description']
+         members = request.form['members']
+         try:
+            image = request.files['image']
+            lib.models.update_groups(group_name, desc, members, image.stream)
+         except:
+            lib.models.update_groups(group_name, desc, members)
+            return redirect('/group/' + group_name)
+         else:
+            return redirect('/group/' + group_name)
+      else:
+         configuration, members = lib.models.get_group_config(group_name)
+         uid = request.cookies.get('sessionid')
+         return render_template('mgroup.html', groupname = group_name, config = configuration, members = members, user = session_list[uid])
+   else:
+      return "404 Not Found", 404
 
 @app.route('/create_group', methods=['GET', 'POST'])
 def create_group():
@@ -108,7 +133,7 @@ def create_group():
       groupname = request.form['groupname']
       description = request.form['description']
       members = request.form['members']
-      lib.models.update_groups(groupname, description, members)
+      lib.models.create_groups(groupname, description, members)
       session_list[uid] = ManageSession(session_list[uid].username, True)
       return render_template('index.html', user = session_list[uid])
    return render_template('create_group.html', user = session_list[uid])

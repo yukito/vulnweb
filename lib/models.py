@@ -26,13 +26,21 @@ def get_summary_of(group_name):
    try:
       topics = conn.cursor().execute('select topic from groupTopics where groupname =?', (group_name,))
    except:
-      topic_summary = []
+      pass
    else:
       topic_summary = []
       conn = sqlite3.connect('db/topics.db')
       for topic in topics:
          topic_summary.append(conn.cursor().execute('select * from ' + group_name + ' where topic =? limit 1', (topic[0],)).fetchone())
    return members, topic_summary
+
+def get_group_config(group_name):
+   conn = sqlite3.connect('db/vulnweb.db')
+   members = []
+   for member in  conn.cursor().execute('select * from groupMembers where groupname =?',(group_name,)):
+      members.append(member)
+   configuration = conn.cursor().execute('select * from groups where groupname =?',(group_name,)).fetchone()
+   return configuration, members
 
 def get_posts_of(group_name, topic):
    conn = sqlite3.connect('db/topics.db')
@@ -55,7 +63,7 @@ def update_users(username, password):
    else:
       return False
 
-def update_groups(groupname, description, members):
+def create_groups(groupname, description, members):
    conn = sqlite3.connect('db/vulnweb.db')
    conn.cursor().execute('insert into groups (groupname, description) values(?,?)',(groupname, description))
    conn.commit()
@@ -64,10 +72,25 @@ def update_groups(groupname, description, members):
    conn.cursor().execute('create table ' + groupname + ' (id integer primary key autoincrement, topic varchar(32) NOT NULL, username varchar(32) NOT NULL, details text, timestamp default CURRENT_TIMESTAMP)')
    conn.commit()
 
-def update_profile(username, a_username, job, firm, department, image):
+def update_groups(groupname, description, members, image = None):
+   conn = sqlite3.connect('db/vulnweb.db')
+   if image:
+      conn.cursor().execute('update groups set groupname =?, description =?, image= ? where groupname =?',(groupname, description, image.read()))
+   else:
+      conn.cursor().execute('update groups set groupname =?, description =? where groupname =?',(groupname, description, groupname, ))
+   conn.commit()
+   for member in members.split():
+      if conn.cursor().execute('select * from groupMembers where groupname =? and username =?',(groupname, member,)):
+         conn.cursor().execute('update groupMembers set role = 1 where groupname =? and username =?',(groupname, member,))
+   conn.commit()
+
+def update_profile(username, a_username, job, firm, department, image = None):
    conn = sqlite3.connect('db/vulnweb.db')
    conn.text_factory = str
-   conn.cursor().execute('update users set name =?, job =?, firm =?, department =?, image= ? where name =?',(a_username, job, firm, department, image.read(), username))
+   if image:
+      conn.cursor().execute('update users set name =?, job =?, firm =?, department =?, image= ? where name =?',(a_username, job, firm, department, image.read(), username))
+   else:
+      conn.cursor().execute('update users set name =?, job =?, firm =?, department =?, where name =?',(a_username, job, firm, department, username))
    conn.commit()
 
 def update_password(username, password):
@@ -122,7 +145,6 @@ def search_group(word):
    result = []
    for group in conn.cursor().execute("select groupname, description from groups where groupname like '%" + word + "%'"):
       result.append(group)
-   print result
    return result
 
 def invite_members(groupname, username, members):
@@ -151,7 +173,10 @@ def get_recently_update(username):
       conn = sqlite3.connect('db/topics.db')
       query += gname[0] + ' union all select * from '
    query = query[:(len(query) - 24)] + 'order by timestamp limit 10'
-   return conn.cursor().execute(query)
+   try:
+      return conn.cursor().execute(query)
+   except:
+      return None
 
 def check_user(username):
    conn = sqlite3.connect('db/vulnweb.db')
@@ -168,3 +193,10 @@ def check_member(username, groupname):
       return True
    else:
       return False
+
+def check_group_exist(groupname):
+   conn = sqlite3.connect('db/vulnweb.db')
+   if conn.cursor().execute('select * from groups where groupname =?',(groupname,)).fetchone() == None:
+      return False
+   else:
+      return True
