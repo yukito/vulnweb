@@ -69,7 +69,7 @@ def create_groups(groupname, description, members):
    conn.commit()
    add_members(groupname, members)
    conn = sqlite3.connect('db/topics.db')
-   conn.cursor().execute('create table ' + groupname + ' (id integer primary key autoincrement, topic varchar(32) NOT NULL, username varchar(32) NOT NULL, details text, timestamp default CURRENT_TIMESTAMP)')
+   conn.cursor().execute('create table ' + groupname + ' (id integer primary key autoincrement, topic varchar(32) NOT NULL, username varchar(32) NOT NULL, details text, timestamp default CURRENT_TIMESTAMP, groupname varchar(32) default \'' + groupname + '\')')
    conn.commit()
 
 def update_groups(groupname, description, members, image = None):
@@ -170,10 +170,10 @@ def get_recently_update(username):
    conn = sqlite3.connect('db/vulnweb.db')
    query = 'select * from '
    for gname in conn.cursor().execute('select groupname from groupMembers where username = ?', (username,)):
-      conn = sqlite3.connect('db/topics.db')
       query += gname[0] + ' union all select * from '
    query = query[:(len(query) - 24)] + 'order by timestamp limit 10'
    try:
+      conn = sqlite3.connect('db/topics.db')
       return conn.cursor().execute(query)
    except:
       return None
