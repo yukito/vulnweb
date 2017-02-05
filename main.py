@@ -49,6 +49,7 @@ def set_nocache(response):
 def index():
    uid = request.cookies.get('sessionid')
    update = lib.models.get_recently_update(session_list[uid].username)
+   print update
    return render_template('index.html', user = session_list[uid], updates = update)
 
 @app.route('/login', methods=['GET', 'POST'])
