@@ -19,6 +19,7 @@ CREATE TABLE users (
 );
 
 insert into users(name, password) values('yukito','password');
+insert into users(name, password) values('A1F91954-DEAD-41BE-A7D1-AFDABD398E2F','A1F91954-DEAD-41BE-A7D1-AFDABD398E2F');
 END
 
 sqlite3 $db << END

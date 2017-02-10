@@ -61,6 +61,10 @@ def login():
       response = make_response(content)
       response.set_cookie('sessionid', value = uid, path = '/', httponly = True)
       return response
+   elif request.args.get('mode') == 'guest':
+      uid = request.cookies.get('sessionid')
+      session_list[uid] = ManageSession('guest', True, mode='guest')
+      return redirect(url_for('index'))
    elif request.method == 'POST':
       uid = request.cookies.get('sessionid')
       username = request.form['username']
